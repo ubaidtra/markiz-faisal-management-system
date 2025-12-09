@@ -42,24 +42,37 @@ router.get('/:id', auth, async (req, res) => {
 
 router.post('/', auth, authorize('admin', 'teacher'), async (req, res) => {
   try {
-    const studentData = req.body;
+    let studentData = { ...req.body };
     
+    // Remove studentId if it's empty or just whitespace, then auto-generate
+    if (!studentData.studentId || (typeof studentData.studentId === 'string' && studentData.studentId.trim() === '')) {
+      delete studentData.studentId;
+    }
+    
+    // Auto-generate studentId if not provided
     if (!studentData.studentId) {
       studentData.studentId = await generateStudentId();
+      console.log('Generated Student ID:', studentData.studentId);
     }
     
     const student = new Student(studentData);
     await student.save();
     res.status(201).json(student);
   } catch (error) {
+    console.error('Error creating student:', error);
     if (error.code === 11000) {
-      if (error.keyPattern.studentId) {
-        studentData.studentId = await generateStudentId();
+      if (error.keyPattern && error.keyPattern.studentId) {
+        // Retry with a new ID
         try {
-          const student = new Student(studentData);
+          let retryData = { ...req.body };
+          delete retryData.studentId;
+          retryData.studentId = await generateStudentId();
+          console.log('Retry with new Student ID:', retryData.studentId);
+          const student = new Student(retryData);
           await student.save();
           return res.status(201).json(student);
         } catch (retryError) {
+          console.error('Retry error:', retryError);
           return res.status(500).json({ message: 'Server error', error: retryError.message });
         }
       }
