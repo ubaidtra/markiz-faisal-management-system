@@ -1,0 +1,50 @@
+.quran-progress-page {
+  background: var(--bg-secondary);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.form-group.full-width {
+  grid-column: span 2;
+}
+
+.form-group textarea {
+  padding: 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.3s;
+  background: var(--bg-secondary);
+}
+
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+.status-memorized {
+  background: #d1fae5;
+  color: #065f46;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+}
+
+.status-in-progress {
+  background: #fef3c7;
+  color: #92400e;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+}
+
+.status-review {
+  background: #dbeafe;
+  color: #1e40af;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+}
+

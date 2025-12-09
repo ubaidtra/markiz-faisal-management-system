@@ -1,0 +1,108 @@
+.notifications-page {
+  background: var(--bg-secondary);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.badge {
+  background: var(--error-color);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  margin-left: 0.5rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.notification-item {
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 4px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.3s;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--border-color);
+}
+
+.notification-item:hover {
+  background: var(--bg-hover);
+  transform: translateX(4px);
+  box-shadow: var(--shadow-sm);
+}
+
+.notification-item.unread {
+  background: #eff6ff;
+  border-left-color: var(--primary-color);
+  font-weight: 600;
+  border-color: var(--primary-light);
+}
+
+.notification-item.type-success {
+  border-left-color: var(--success-color);
+}
+
+.notification-item.type-warning {
+  border-left-color: var(--warning-color);
+}
+
+.notification-item.type-error {
+  border-left-color: var(--error-color);
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.notification-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.unread-dot {
+  width: 10px;
+  height: 10px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.2);
+}
+
+.notification-item p {
+  color: var(--text-secondary);
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+.notification-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.notification-type {
+  text-transform: capitalize;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.notification-date {
+  color: var(--text-light);
+}
+

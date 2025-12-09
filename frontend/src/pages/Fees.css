@@ -1,0 +1,36 @@
+.fees-page {
+  background: var(--bg-secondary);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+}
+
+.status-paid {
+  background: #d1fae5;
+  color: #065f46;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+}
+
+.status-overdue {
+  background: #fee2e2;
+  color: #991b1b;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+}
+
+.status-partial {
+  background: #dbeafe;
+  color: #1e40af;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+}
+

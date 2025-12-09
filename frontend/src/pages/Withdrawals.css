@@ -1,0 +1,171 @@
+.withdrawals-page {
+  background: var(--bg-secondary);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.filters-section {
+  background: var(--bg-hover);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 0.5rem;
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.3s;
+  background: var(--bg-secondary);
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+.category-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.category-salary {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.category-utilities {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.category-maintenance {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.category-supplies {
+  background: #e9d5ff;
+  color: #6b21a8;
+}
+
+.category-transport {
+  background: #fce7f3;
+  color: #9f1239;
+}
+
+.category-other {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.amount-cell {
+  font-weight: 700;
+  color: var(--error-color);
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+}
+
+.status-approved {
+  background: #d1fae5;
+  color: #065f46;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+}
+
+.status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-approve {
+  background: var(--success-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.3s;
+}
+
+.btn-approve:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-reject {
+  background: var(--error-color);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: all 0.3s;
+}
+
+.btn-reject:hover {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 768px) {
+  .filters-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .action-buttons button {
+    width: 100%;
+  }
+}
+
