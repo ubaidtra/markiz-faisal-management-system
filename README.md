@@ -188,17 +188,45 @@ The system uses the following branding assets:
 
 ## Production Deployment
 
-1. Build the frontend:
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+
+### Quick Deploy Options:
+
+**Vercel (Recommended):**
 ```bash
-cd frontend
-npm run build
+npm i -g vercel
+vercel
 ```
 
-2. Set production environment variables
+**Heroku:**
+```bash
+heroku create your-app-name
+git push heroku main
+```
 
-3. Deploy backend to a Node.js hosting service (Heroku, DigitalOcean, etc.)
+**Docker:**
+```bash
+docker-compose up -d
+```
 
-4. Deploy frontend to a static hosting service (Vercel, Netlify, etc.)
+### Build for Production:
+
+```bash
+# Build all
+npm run build:all
+
+# Or separately
+npm run build:backend  # Backend dependencies
+npm run build          # Frontend build
+```
+
+### Environment Variables:
+
+See `DEPLOYMENT.md` for complete environment variable setup. Generate secrets:
+```bash
+cd backend
+node scripts/generate-secrets.js
+```
 
 ## License
 

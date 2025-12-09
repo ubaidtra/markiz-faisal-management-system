@@ -1,14 +1,59 @@
+# Dependencies
 node_modules/
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Production
+/build
+/dist
+
+# Environment variables
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.DS_Store
-build/
-dist/
+lerna-debug.log*
 *.log
 
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+test-register-student.js
+
+# Build outputs
+frontend/build/
+backend/dist/
+
+# PM2
+.pm2/
+
+# Vercel
+.vercel
+
+# Heroku
+.heroku
