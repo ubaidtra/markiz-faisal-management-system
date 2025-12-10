@@ -4,13 +4,18 @@ A comprehensive school management system for Faisal, His Parents and Family's Qu
 
 ## Features
 
-- **Student Management**: Complete CRUD operations for student records, attendance tracking
-- **Teacher Management**: Manage teacher profiles, qualifications, and schedules
-- **Quran Progress Tracking**: Track memorization progress, surahs, ayahs, and grades
-- **Fee Management**: Handle tuition fees, payments, and financial records
-- **Reports & Analytics**: Comprehensive reports for students, fees, attendance, and Quran progress
-- **Notifications System**: Real-time notifications for all users
-- **Role-Based Access**: Admin, Teacher, and Accountant roles with appropriate permissions
+- **Student Management**: Complete CRUD operations with automated ID generation (STU-YYYY-XXXX), attendance tracking, and parent information
+- **Teacher Management**: Manage teacher profiles, qualifications, schedules with automated ID generation (TCH-YYYY-XXXX)
+- **Halqa Management**: Create and manage study circles (Halqas), assign teachers and students to halqas, schedule management
+- **Quran Progress Tracking**: Track memorization progress, surahs, ayahs, and grades with detailed progress reports
+- **Fee Management**: Handle tuition fees, payments, and financial records in Gambian Dalasi (GMD)
+- **Withdrawal Management**: Track expenses and withdrawals with categories, approval workflow, and financial reporting
+- **Reports & Analytics**: Comprehensive reports for students, fees, attendance, Quran progress, and financial summaries
+- **Notifications System**: Real-time notifications for all users with read/unread status
+- **Role-Based Access Control**: Admin, Teacher, and Accountant roles with appropriate permissions
+- **Modern UI**: Colorful, responsive design with React Icons, mobile-friendly navigation
+- **Automated ID Generation**: Student and Teacher IDs are automatically generated
+- **Currency Support**: All financial amounts displayed in Gambian Dalasi (GMD)
 
 ## Technology Stack
 
@@ -159,6 +164,23 @@ npm start
 - `DELETE /api/fees/:id` - Delete fee record
 - `GET /api/fees/student/:studentId/summary` - Get student fee summary
 
+### Withdrawals
+- `GET /api/withdrawals` - Get all withdrawals (with filters)
+- `GET /api/withdrawals/:id` - Get withdrawal by ID
+- `POST /api/withdrawals` - Create withdrawal (Admin/Accountant)
+- `PUT /api/withdrawals/:id` - Update withdrawal (Admin/Accountant)
+- `DELETE /api/withdrawals/:id` - Delete withdrawal (Admin only)
+- `GET /api/withdrawals/summary/totals` - Get withdrawal summary
+
+### Halqas
+- `GET /api/halqas` - Get all halqas (with search/filter)
+- `GET /api/halqas/:id` - Get halqa details
+- `POST /api/halqas` - Create halqa (Admin only)
+- `PUT /api/halqas/:id` - Update halqa (Admin only)
+- `DELETE /api/halqas/:id` - Delete halqa (Admin only)
+- `POST /api/halqas/:id/students` - Add students to halqa
+- `DELETE /api/halqas/:id/students/:studentId` - Remove student from halqa
+
 ### Reports
 - `GET /api/reports/dashboard` - Dashboard statistics
 - `GET /api/reports/students` - Student reports
@@ -228,7 +250,24 @@ cd backend
 node scripts/generate-secrets.js
 ```
 
+## Documentation
+
+- [API Documentation](./API_DOCUMENTATION.md) - Complete API reference
+- [Deployment Guide](./DEPLOYMENT.md) - Detailed deployment instructions
+- [Vercel Deployment](./VERCEL_DEPLOYMENT.md) - Vercel-specific deployment guide
+- [Contributing](./CONTRIBUTING.md) - Contribution guidelines
+- [Changelog](./CHANGELOG.md) - Version history
+
+## Support
+
+For issues, questions, or contributions, please:
+- Open an issue on GitHub
+- Check existing documentation
+- Review API documentation for integration help
+
 ## License
 
 This project is proprietary software for Faisal Qura'anic Memorization Center.
+
+See [LICENSE](./LICENSE) for details.
 

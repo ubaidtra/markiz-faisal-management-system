@@ -55,12 +55,34 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+// Error handling middleware (must be last)
+const errorHandler = require('./middleware/errorHandler');
+app.use(errorHandler);
+
+// Handle 404
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});
+
 const PORT = process.env.PORT || 7000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🌐 API: http://localhost:${PORT}/api`);
   if (process.env.NODE_ENV === 'production') {
-    console.log('Serving React app from build folder');
+    console.log('📱 Serving React app from build folder');
   }
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Promise Rejection:', err);
+  process.exit(1);
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+  process.exit(1);
 });
 
