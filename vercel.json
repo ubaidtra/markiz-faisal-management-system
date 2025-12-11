@@ -1,5 +1,9 @@
 {
   "version": 2,
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/build",
+  "installCommand": "npm run install-all",
+  "framework": null,
   "builds": [
     {
       "src": "backend/server.js",

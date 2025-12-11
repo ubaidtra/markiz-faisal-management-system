@@ -32,7 +32,11 @@ A comprehensive school management system for Faisal, His Parents and Family's Qu
 
 ## Installation
 
-1. Clone the repository or navigate to the project directory
+1. Clone the repository:
+```bash
+git clone https://github.com/ubaidtra/markiz-faisal-management-system.git
+cd markiz-faisal-management-system
+```
 
 2. Install root dependencies:
 ```bash
