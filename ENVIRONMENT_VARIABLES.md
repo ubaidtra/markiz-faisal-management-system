@@ -19,7 +19,7 @@ mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-cen
 Add these in **Vercel Dashboard → Settings → Environment Variables**:
 
 ```env
-MONGODB_URI=mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=Cluster0
+MONGODB_URI=mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=markiz-faisal-management-system
 JWT_SECRET=your-generated-jwt-secret-here
 NEXTAUTH_SECRET=your-generated-nextauth-secret-here
 SESSION_SECRET=your-generated-session-secret-here
@@ -77,7 +77,7 @@ Make sure this user has read/write permissions in MongoDB Atlas.
 ### backend/.env
 
 ```env
-MONGODB_URI=mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=Cluster0
+MONGODB_URI=mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=markiz-faisal-management-system
 PORT=7000
 JWT_SECRET=your-local-jwt-secret
 NEXTAUTH_SECRET=your-local-nextauth-secret

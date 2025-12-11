@@ -3,7 +3,7 @@
 # Add each variable for Production, Preview, and Development environments
 
 # MongoDB Connection String
-MONGODB_URI=mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=Cluster0
+MONGODB_URI=mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=markiz-faisal-management-system
 
 # JWT Secret (for token signing)
 JWT_SECRET=1a558ff8ab965d3f615dc402cfe74e991358fbc5989117c247dee7e7b63ef5d247be4258eb4042a1c0f842a1c2a685a044cdf32b1c57b63ae16cdd16e6edb68d

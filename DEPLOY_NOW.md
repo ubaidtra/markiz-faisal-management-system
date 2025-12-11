@@ -37,7 +37,7 @@ After deployment, Vercel will give you a URL like: `https://markiz-faisal-manage
 
 **Add these variables** (copy from `VERCEL_ENV_VARIABLES.txt`):
 
-1. `MONGODB_URI` = mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=Cluster0
+1. `MONGODB_URI` = mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=markiz-faisal-management-system
 2. `JWT_SECRET` = 1a558ff8ab965d3f615dc402cfe74e991358fbc5989117c247dee7e7b63ef5d247be4258eb4042a1c0f842a1c2a685a044cdf32b1c57b63ae16cdd16e6edb68d
 3. `NEXTAUTH_SECRET` = KwJARb028Hp0LZz1KdAXqwUlytdwUE0oGPg9C6GTYRg=
 4. `SESSION_SECRET` = bd3579c50be2b14567c8b7a4de23213f4b4ddbc16d06c545b292a47a65e52f25
@@ -84,7 +84,7 @@ After successful deployment:
 
 ```bash
 cd backend
-echo "MONGODB_URI=mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=Cluster0" > .env
+echo "MONGODB_URI=mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=markiz-faisal-management-system" > .env
 npm run seed
 del .env
 ```
