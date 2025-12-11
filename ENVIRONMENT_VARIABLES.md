@@ -5,7 +5,7 @@
 Your MongoDB connection string has been configured:
 
 ```
-mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=Cluster0
+mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=markiz-faisal-management-system
 ```
 
 **Database Name:** `faisal-center`
