@@ -73,21 +73,24 @@ vercel
 After initial deployment, go to:
 **Vercel Dashboard → Your Project → Settings → Environment Variables**
 
-Add these variables (for **Production** environment):
+**All environment variables are ready!** See `VERCEL_ENV_VARIABLES.txt` for copy-paste ready values.
+
+Add these variables (for **Production, Preview, and Development** environments):
 
 ```
-MONGODB_URI=your-mongodb-connection-string-here
-JWT_SECRET=your-generated-jwt-secret-here
-NEXTAUTH_SECRET=your-generated-nextauth-secret-here
-SESSION_SECRET=your-generated-session-secret-here
+MONGODB_URI=mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=Cluster0
+JWT_SECRET=1a558ff8ab965d3f615dc402cfe74e991358fbc5989117c247dee7e7b63ef5d247be4258eb4042a1c0f842a1c2a685a044cdf32b1c57b63ae16cdd16e6edb68d
+NEXTAUTH_SECRET=KwJARb028Hp0LZz1KdAXqwUlytdwUE0oGPg9C6GTYRg=
+SESSION_SECRET=bd3579c50be2b14567c8b7a4de23213f4b4ddbc16d06c545b292a47a65e52f25
 NODE_ENV=production
 PORT=7000
 REACT_APP_API_URL=https://your-app.vercel.app/api
 ```
 
 **Important:** 
-- Replace `your-app.vercel.app` with your actual Vercel deployment URL
-- Add variables for Production, Preview, and Development environments
+- Replace `your-app.vercel.app` with your actual Vercel deployment URL (after Step 5)
+- Add variables for **all three environments**: Production, Preview, and Development
+- See `VERCEL_ENV_VARIABLES.txt` for easy copy-paste
 
 ### Step 5: Redeploy
 

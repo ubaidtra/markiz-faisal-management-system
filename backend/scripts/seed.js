@@ -6,7 +6,7 @@ dotenv.config();
 
 const seedUsers = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://ubaidttech_db_user:tra%40tech.281986@cluster0.lxszwnk.mongodb.net/faisal-center?appName=Cluster0');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=Cluster0');
 
     const users = [
       {
