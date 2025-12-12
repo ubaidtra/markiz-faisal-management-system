@@ -44,11 +44,32 @@ app.get('/api/health', async (req, res) => {
   try {
     await connectDB();
     const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+    
+    const baseDir = process.cwd();
+    const possiblePaths = [
+      path.join(baseDir, 'backend'),
+      path.join(__dirname, '../backend'),
+      path.resolve(__dirname, '../backend'),
+    ];
+    
+    const pathInfo = {
+      __dirname: __dirname,
+      cwd: baseDir,
+      searchedPaths: possiblePaths,
+      pathsExist: possiblePaths.map(p => ({
+        path: p,
+        exists: fs.existsSync(p),
+        hasRoutes: fs.existsSync(p) && fs.existsSync(path.join(p, 'routes')),
+        hasModels: fs.existsSync(p) && fs.existsSync(path.join(p, 'models'))
+      }))
+    };
+    
     res.json({ 
       status: 'ok', 
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV || 'development',
-      database: dbStatus
+      database: dbStatus,
+      pathInfo: pathInfo
     });
   } catch (error) {
     res.status(500).json({ 
