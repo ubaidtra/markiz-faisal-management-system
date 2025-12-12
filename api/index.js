@@ -17,11 +17,19 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-if (!mongoose.connection.readyState) {
-  mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=markiz-faisal-management-system')
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.error('MongoDB connection error:', err));
-}
+const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) {
+    return;
+  }
+  try {
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=markiz-faisal-management-system');
+    console.log('MongoDB connected');
+  } catch (err) {
+    console.error('MongoDB connection error:', err);
+  }
+};
+
+connectDB();
 
 app.use('/api/auth', require('../backend/routes/auth'));
 app.use('/api/students', require('../backend/routes/students'));
