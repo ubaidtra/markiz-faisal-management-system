@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import axios from 'axios';
+import API_URL from '../utils/api';
 import { formatCurrency } from '../utils/currency';
 import './Withdrawals.css';
-
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:7000/api';
 
 const Withdrawals = () => {
   const [withdrawals, setWithdrawals] = useState([]);
