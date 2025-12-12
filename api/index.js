@@ -41,12 +41,22 @@ app.use('/api/withdrawals', require('../backend/routes/withdrawals'));
 app.use('/api/reports', require('../backend/routes/reports'));
 app.use('/api/notifications', require('../backend/routes/notifications'));
 
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
-  });
+app.get('/api/health', async (req, res) => {
+  try {
+    const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+    res.json({ 
+      status: 'ok', 
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development',
+      database: dbStatus
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      status: 'error', 
+      message: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 });
 
 const errorHandler = require('../backend/middleware/errorHandler');
