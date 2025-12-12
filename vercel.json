@@ -19,12 +19,8 @@
       "destination": "/api/index.js"
     },
     {
-      "source": "/(.*\\.(js|css|ico|png|jpg|jpeg|svg|gif|woff|woff2|ttf|eot|json))",
-      "destination": "/frontend/$1"
-    },
-    {
       "source": "/(.*)",
-      "destination": "/frontend/index.html"
+      "destination": "/frontend/$1"
     }
   ]
 }
