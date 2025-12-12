@@ -1,9 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const dotenv = require('dotenv');
-
-dotenv.config();
+const path = require('path');
 
 const app = express();
 
@@ -17,22 +15,33 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+let isConnected = false;
+
 const connectDB = async () => {
-  if (mongoose.connection.readyState === 1) {
+  if (isConnected || mongoose.connection.readyState === 1) {
     return;
   }
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=markiz-faisal-management-system');
+    const mongoUri = process.env.MONGODB_URI || 'mongodb+srv://Abdoullahsecka:secka281986@cluster0.lxszwnk.mongodb.net/faisal-center?retryWrites=true&w=majority&appName=markiz-faisal-management-system';
+    await mongoose.connect(mongoUri);
+    isConnected = true;
     console.log('MongoDB connected');
   } catch (err) {
     console.error('MongoDB connection error:', err);
+    isConnected = false;
   }
 };
 
-connectDB();
+app.use(async (req, res, next) => {
+  if (!isConnected && mongoose.connection.readyState !== 1) {
+    await connectDB();
+  }
+  next();
+});
 
 app.get('/api/health', async (req, res) => {
   try {
+    await connectDB();
     const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
     res.json({ 
       status: 'ok', 
@@ -49,31 +58,52 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+const backendPath = path.join(__dirname, '../backend');
+
+const loadRoute = (routePath, routeName) => {
+  try {
+    const route = require(path.join(backendPath, routePath));
+    app.use(`/api/${routeName}`, route);
+    console.log(`Loaded route: /api/${routeName}`);
+    return true;
+  } catch (error) {
+    console.error(`Error loading route ${routeName}:`, error);
+    app.use(`/api/${routeName}`, (req, res) => {
+      res.status(500).json({ 
+        message: `Route ${routeName} not available`, 
+        error: error.message 
+      });
+    });
+    return false;
+  }
+};
+
+loadRoute('routes/auth', 'auth');
+loadRoute('routes/students', 'students');
+loadRoute('routes/teachers', 'teachers');
+loadRoute('routes/halqas', 'halqas');
+loadRoute('routes/quranProgress', 'quran-progress');
+loadRoute('routes/fees', 'fees');
+loadRoute('routes/withdrawals', 'withdrawals');
+loadRoute('routes/reports', 'reports');
+loadRoute('routes/notifications', 'notifications');
+
 try {
-  app.use('/api/auth', require('../backend/routes/auth'));
-  app.use('/api/students', require('../backend/routes/students'));
-  app.use('/api/teachers', require('../backend/routes/teachers'));
-  app.use('/api/halqas', require('../backend/routes/halqas'));
-  app.use('/api/quran-progress', require('../backend/routes/quranProgress'));
-  app.use('/api/fees', require('../backend/routes/fees'));
-  app.use('/api/withdrawals', require('../backend/routes/withdrawals'));
-  app.use('/api/reports', require('../backend/routes/reports'));
-  app.use('/api/notifications', require('../backend/routes/notifications'));
+  const errorHandler = require(path.join(backendPath, 'middleware/errorHandler'));
+  app.use(errorHandler);
 } catch (error) {
-  console.error('Error loading routes:', error);
-  app.use('/api/*', (req, res) => {
+  console.error('Error loading error handler:', error);
+  app.use((err, req, res, next) => {
+    console.error('Unhandled error:', err);
     res.status(500).json({ 
-      message: 'API routes not available', 
-      error: error.message 
+      message: 'Server error', 
+      error: err.message 
     });
   });
 }
 
-const errorHandler = require('../backend/middleware/errorHandler');
-app.use(errorHandler);
-
 app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+  res.status(404).json({ message: 'Route not found', path: req.path });
 });
 
 module.exports = app;
