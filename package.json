@@ -11,7 +11,7 @@
     "build": "cd frontend && npm install && npm run build",
     "build:backend": "cd backend && npm install --production",
     "build:all": "npm run build:backend && npm run build",
-    "vercel-build": "cd frontend && npm ci && npm run build",
+    "vercel-build": "cd frontend && npm install && npm run build",
     "start": "cd backend && npm start",
     "start:prod": "cd backend && NODE_ENV=production npm start",
     "deploy:prepare": "node scripts/deploy.js || powershell -ExecutionPolicy Bypass -File scripts/deploy.ps1"
