@@ -31,16 +31,6 @@ const connectDB = async () => {
 
 connectDB();
 
-app.use('/api/auth', require('../backend/routes/auth'));
-app.use('/api/students', require('../backend/routes/students'));
-app.use('/api/teachers', require('../backend/routes/teachers'));
-app.use('/api/halqas', require('../backend/routes/halqas'));
-app.use('/api/quran-progress', require('../backend/routes/quranProgress'));
-app.use('/api/fees', require('../backend/routes/fees'));
-app.use('/api/withdrawals', require('../backend/routes/withdrawals'));
-app.use('/api/reports', require('../backend/routes/reports'));
-app.use('/api/notifications', require('../backend/routes/notifications'));
-
 app.get('/api/health', async (req, res) => {
   try {
     const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
@@ -59,6 +49,26 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+try {
+  app.use('/api/auth', require('../backend/routes/auth'));
+  app.use('/api/students', require('../backend/routes/students'));
+  app.use('/api/teachers', require('../backend/routes/teachers'));
+  app.use('/api/halqas', require('../backend/routes/halqas'));
+  app.use('/api/quran-progress', require('../backend/routes/quranProgress'));
+  app.use('/api/fees', require('../backend/routes/fees'));
+  app.use('/api/withdrawals', require('../backend/routes/withdrawals'));
+  app.use('/api/reports', require('../backend/routes/reports'));
+  app.use('/api/notifications', require('../backend/routes/notifications'));
+} catch (error) {
+  console.error('Error loading routes:', error);
+  app.use('/api/*', (req, res) => {
+    res.status(500).json({ 
+      message: 'API routes not available', 
+      error: error.message 
+    });
+  });
+}
+
 const errorHandler = require('../backend/middleware/errorHandler');
 app.use(errorHandler);
 
@@ -67,4 +77,3 @@ app.use((req, res) => {
 });
 
 module.exports = app;
-
