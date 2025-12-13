@@ -20,15 +20,24 @@ const Reports = () => {
     startDate: '',
     endDate: ''
   });
+  const [appliedDateRange, setAppliedDateRange] = useState({
+    startDate: '',
+    endDate: ''
+  });
+  const [dateError, setDateError] = useState('');
 
   const fetchReports = useCallback(async () => {
     setLoading(true);
     try {
+      const params = {};
+      if (appliedDateRange.startDate) params.startDate = appliedDateRange.startDate;
+      if (appliedDateRange.endDate) params.endDate = appliedDateRange.endDate;
+
       const [dashboard, fees, withdrawals, attendance, quran] = await Promise.all([
         axios.get(`${API_URL}/reports/dashboard`),
-        axios.get(`${API_URL}/reports/fees`, { params: dateRange }),
-        axios.get(`${API_URL}/reports/withdrawals`, { params: dateRange }),
-        axios.get(`${API_URL}/reports/attendance`, { params: dateRange }),
+        axios.get(`${API_URL}/reports/fees`, { params }),
+        axios.get(`${API_URL}/reports/withdrawals`, { params }),
+        axios.get(`${API_URL}/reports/attendance`, { params }),
         axios.get(`${API_URL}/reports/quran-progress`)
       ]);
       setDashboardStats(dashboard.data);
@@ -41,21 +50,40 @@ const Reports = () => {
     } finally {
       setLoading(false);
     }
-  }, [dateRange]);
+  }, [appliedDateRange]);
 
   useEffect(() => {
     fetchReports();
   }, [fetchReports]);
 
   const handleDateChange = (e) => {
-    setDateRange({
+    const { name, value } = e.target;
+    const newDateRange = {
       ...dateRange,
-      [e.target.name]: e.target.value
-    });
+      [name]: value
+    };
+    setDateRange(newDateRange);
+    setDateError('');
+
+    // Validate date range
+    if (newDateRange.startDate && newDateRange.endDate) {
+      if (new Date(newDateRange.startDate) > new Date(newDateRange.endDate)) {
+        setDateError('End date must be after start date');
+      }
+    }
   };
 
   const applyDateFilter = () => {
-    fetchReports();
+    if (dateError) {
+      return;
+    }
+    setAppliedDateRange({ ...dateRange });
+  };
+
+  const clearDateFilter = () => {
+    setDateRange({ startDate: '', endDate: '' });
+    setAppliedDateRange({ startDate: '', endDate: '' });
+    setDateError('');
   };
 
   if (loading) {
@@ -71,23 +99,54 @@ const Reports = () => {
       <div className="reports-page">
         <div className="page-header">
           <h1>Reports & Analytics</h1>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <div className="date-filter">
-              <input
-                type="date"
-                name="startDate"
-                value={dateRange.startDate}
-                onChange={handleDateChange}
-                placeholder="Start Date"
-              />
-              <input
-                type="date"
-                name="endDate"
-                value={dateRange.endDate}
-                onChange={handleDateChange}
-                placeholder="End Date"
-              />
-              <button onClick={applyDateFilter} className="btn-primary">Apply Filter</button>
+          <div className="reports-header-actions">
+            <div className="date-filter-container">
+              <div className="date-filter">
+                <div className="date-input-group">
+                  <label htmlFor="startDate">Start Date</label>
+                  <input
+                    id="startDate"
+                    type="date"
+                    name="startDate"
+                    value={dateRange.startDate}
+                    onChange={handleDateChange}
+                    max={dateRange.endDate || undefined}
+                  />
+                </div>
+                <div className="date-input-group">
+                  <label htmlFor="endDate">End Date</label>
+                  <input
+                    id="endDate"
+                    type="date"
+                    name="endDate"
+                    value={dateRange.endDate}
+                    onChange={handleDateChange}
+                    min={dateRange.startDate || undefined}
+                  />
+                </div>
+                <div className="date-filter-buttons">
+                  <button 
+                    onClick={applyDateFilter} 
+                    className="btn-primary"
+                    disabled={!!dateError}
+                  >
+                    Apply Filter
+                  </button>
+                  {(appliedDateRange.startDate || appliedDateRange.endDate) && (
+                    <button onClick={clearDateFilter} className="btn-secondary">
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+              {dateError && (
+                <div className="date-error">{dateError}</div>
+              )}
+              {(appliedDateRange.startDate || appliedDateRange.endDate) && (
+                <div className="date-filter-info">
+                  Filtered: {appliedDateRange.startDate || 'All'} to {appliedDateRange.endDate || 'All'}
+                </div>
+              )}
             </div>
             {user?.role === 'admin' && (
               <button onClick={() => setShowPrintView(true)} className="btn-print">
