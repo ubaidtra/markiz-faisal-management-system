@@ -13,6 +13,7 @@ import Fees from './pages/Fees';
 import Withdrawals from './pages/Withdrawals';
 import Reports from './pages/Reports';
 import Notifications from './pages/Notifications';
+import Profile from './pages/Profile';
 import './App.css';
 
 function App() {
@@ -91,6 +92,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Notifications />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
               </PrivateRoute>
             }
           />

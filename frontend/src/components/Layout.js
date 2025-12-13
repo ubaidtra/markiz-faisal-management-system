@@ -85,6 +85,7 @@ const Layout = ({ children }) => {
               <span className="user-name">{user?.name}</span>
               <span className="user-role">{user?.role}</span>
             </div>
+            <Link to="/profile" className="profile-link">Profile</Link>
             <button onClick={handleLogout} className="logout-btn">Logout</button>
           </div>
         </div>
