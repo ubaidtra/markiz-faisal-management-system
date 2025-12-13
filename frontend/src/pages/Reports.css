@@ -60,6 +60,11 @@
   cursor: not-allowed;
 }
 
+.date-filter input.date-input-error {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
 .date-filter-buttons {
   display: flex;
   gap: 0.5rem;

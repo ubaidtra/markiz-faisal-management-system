@@ -67,17 +67,38 @@ const Reports = () => {
 
     // Validate date range
     if (newDateRange.startDate && newDateRange.endDate) {
-      if (new Date(newDateRange.startDate) > new Date(newDateRange.endDate)) {
-        setDateError('End date must be after start date');
+      const startDate = new Date(newDateRange.startDate);
+      const endDate = new Date(newDateRange.endDate);
+      
+      if (startDate > endDate) {
+        setDateError('End date must be after or equal to start date');
+      } else {
+        setDateError('');
       }
+    } else {
+      // Clear error if one date is cleared
+      setDateError('');
     }
   };
 
   const applyDateFilter = () => {
+    // Re-validate before applying
+    if (dateRange.startDate && dateRange.endDate) {
+      const startDate = new Date(dateRange.startDate);
+      const endDate = new Date(dateRange.endDate);
+      
+      if (startDate > endDate) {
+        setDateError('End date must be after or equal to start date');
+        return;
+      }
+    }
+    
     if (dateError) {
       return;
     }
+    
     setAppliedDateRange({ ...dateRange });
+    setDateError('');
   };
 
   const clearDateFilter = () => {
@@ -110,7 +131,8 @@ const Reports = () => {
                     name="startDate"
                     value={dateRange.startDate}
                     onChange={handleDateChange}
-                    max={dateRange.endDate || undefined}
+                    max={dateRange.endDate || ''}
+                    className={dateError && dateRange.startDate && dateRange.endDate ? 'date-input-error' : ''}
                   />
                 </div>
                 <div className="date-input-group">
@@ -121,7 +143,8 @@ const Reports = () => {
                     name="endDate"
                     value={dateRange.endDate}
                     onChange={handleDateChange}
-                    min={dateRange.startDate || undefined}
+                    min={dateRange.startDate || ''}
+                    className={dateError && dateRange.startDate && dateRange.endDate ? 'date-input-error' : ''}
                   />
                 </div>
                 <div className="date-filter-buttons">
