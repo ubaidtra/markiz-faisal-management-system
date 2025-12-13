@@ -138,26 +138,48 @@ if (!backendPath) {
 } else {
   const loadRoute = (routePath, routeName) => {
     try {
-      const fullPath = path.join(backendPath, routePath);
+      const routeFile = routePath.endsWith('.js') ? routePath : `${routePath}.js`;
+      const fullPath = path.join(backendPath, routeFile);
+      
+      console.log(`Attempting to load route: ${routeName}`);
+      console.log(`  Looking for: ${fullPath}`);
+      console.log(`  Backend path: ${backendPath}`);
+      console.log(`  File exists: ${fs.existsSync(fullPath)}`);
+      
       if (!fs.existsSync(fullPath)) {
-        throw new Error(`Route file not found: ${fullPath}`);
+        const altPath = path.join(backendPath, routePath);
+        console.log(`  Trying alternative path: ${altPath}`);
+        console.log(`  Alternative exists: ${fs.existsSync(altPath)}`);
+        
+        if (fs.existsSync(altPath)) {
+          const route = require(altPath);
+          app.use(`/api/${routeName}`, route);
+          console.log(`✓ Loaded route: /api/${routeName} from ${altPath}`);
+          return true;
+        }
+        
+        throw new Error(`Route file not found: ${fullPath} or ${altPath}`);
       }
       
       const route = require(fullPath);
       app.use(`/api/${routeName}`, route);
-      console.log(`✓ Loaded route: /api/${routeName}`);
+      console.log(`✓ Loaded route: /api/${routeName} from ${fullPath}`);
       return true;
     } catch (error) {
       console.error(`✗ Error loading route ${routeName}:`, error.message);
-      console.error(`  Path: ${path.join(backendPath, routePath)}`);
+      console.error(`  Attempted path: ${path.join(backendPath, routePath)}`);
+      console.error(`  Attempted path with .js: ${path.join(backendPath, routePath)}.js`);
       if (error.stack) {
-        console.error(`  Stack:`, error.stack.split('\n').slice(0, 5).join('\n'));
+        console.error(`  Stack:`, error.stack.split('\n').slice(0, 10).join('\n'));
       }
       app.use(`/api/${routeName}`, (req, res) => {
         res.status(500).json({ 
           message: `Route ${routeName} not available`, 
           error: error.message,
-          path: path.join(backendPath, routePath)
+          attemptedPath: path.join(backendPath, routePath),
+          backendPath: backendPath,
+          __dirname: __dirname,
+          cwd: process.cwd()
         });
       });
       return false;
