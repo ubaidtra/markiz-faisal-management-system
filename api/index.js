@@ -83,6 +83,8 @@ app.get('/api/health', async (req, res) => {
 const getBackendPath = () => {
   const baseDir = process.cwd();
   const possiblePaths = [
+    path.join(__dirname, 'backend'),
+    path.join(baseDir, 'api', 'backend'),
     path.join(baseDir, 'backend'),
     path.join(__dirname, '../backend'),
     path.resolve(__dirname, '../backend'),
