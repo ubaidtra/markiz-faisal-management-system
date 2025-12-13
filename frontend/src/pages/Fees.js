@@ -54,17 +54,23 @@ const Fees = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const submitData = {
+        ...formData,
+        amount: parseFloat(formData.amount)
+      };
+
+      // If payment method is selected, automatically set paidAmount to full amount
+      if (formData.paymentMethod) {
+        submitData.paidAmount = parseFloat(formData.amount);
+      }
+
       if (editingFee) {
         await axios.put(`${API_URL}/fees/${editingFee._id}`, {
-          ...formData,
-          amount: parseFloat(formData.amount),
-          paidAmount: parseFloat(formData.paidAmount || 0)
+          ...submitData,
+          paidAmount: formData.paidAmount ? parseFloat(formData.paidAmount) : submitData.paidAmount
         });
       } else {
-        await axios.post(`${API_URL}/fees`, {
-          ...formData,
-          amount: parseFloat(formData.amount)
-        });
+        await axios.post(`${API_URL}/fees`, submitData);
       }
       fetchFees();
       resetForm();

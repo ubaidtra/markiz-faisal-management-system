@@ -46,10 +46,19 @@ router.get('/:id', auth, async (req, res) => {
 
 router.post('/', auth, authorize('admin', 'accountant'), async (req, res) => {
   try {
-    const fee = new Fee({
+    const feeData = {
       ...req.body,
       recordedBy: req.user._id
-    });
+    };
+
+    // If payment method is provided, it means payment is registered and fee is paid
+    if (feeData.paymentMethod) {
+      feeData.status = 'paid';
+      feeData.paidAmount = feeData.amount || feeData.paidAmount || feeData.amount;
+      feeData.paidDate = new Date();
+    }
+
+    const fee = new Fee(feeData);
     await fee.save();
     await fee.populate('student', 'firstName lastName studentId');
     await fee.populate('recordedBy', 'name username');
@@ -66,13 +75,21 @@ router.put('/:id', auth, authorize('admin', 'accountant'), async (req, res) => {
       return res.status(404).json({ message: 'Fee record not found' });
     }
 
-    if (req.body.paidAmount) {
+    // If payment method is provided or updated, it means payment is registered and fee is paid
+    if (req.body.paymentMethod) {
+      req.body.status = 'paid';
+      req.body.paidAmount = req.body.paidAmount || fee.amount;
+      req.body.paidDate = new Date();
+    } else if (req.body.paidAmount !== undefined) {
+      // If paidAmount is updated without paymentMethod, handle partial payments
       fee.paidAmount = req.body.paidAmount;
       if (fee.paidAmount >= fee.amount) {
         fee.status = 'paid';
         fee.paidDate = new Date();
       } else if (fee.paidAmount > 0) {
         fee.status = 'partial';
+      } else {
+        fee.status = 'pending';
       }
     }
 
