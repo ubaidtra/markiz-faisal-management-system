@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import Layout from '../components/Layout';
+import PrintableReport from '../components/PrintableReport';
 import axios from 'axios';
 import API_URL from '../utils/api';
 import { formatCurrencyShort } from '../utils/currency';
+import { AuthContext } from '../context/AuthContext';
 import './Reports.css';
 
 const Reports = () => {
+  const { user } = useContext(AuthContext);
   const [dashboardStats, setDashboardStats] = useState(null);
   const [feeReport, setFeeReport] = useState(null);
   const [withdrawalReport, setWithdrawalReport] = useState(null);
   const [attendanceReport, setAttendanceReport] = useState(null);
   const [quranReport, setQuranReport] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showPrintView, setShowPrintView] = useState(false);
   const [dateRange, setDateRange] = useState({
     startDate: '',
     endDate: ''
   });
 
-  useEffect(() => {
-    fetchReports();
-  }, []);
-
-  const fetchReports = async () => {
+  const fetchReports = useCallback(async () => {
     setLoading(true);
     try {
       const [dashboard, fees, withdrawals, attendance, quran] = await Promise.all([
@@ -41,7 +41,11 @@ const Reports = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [dateRange]);
+
+  useEffect(() => {
+    fetchReports();
+  }, [fetchReports]);
 
   const handleDateChange = (e) => {
     setDateRange({
@@ -67,22 +71,29 @@ const Reports = () => {
       <div className="reports-page">
         <div className="page-header">
           <h1>Reports & Analytics</h1>
-          <div className="date-filter">
-            <input
-              type="date"
-              name="startDate"
-              value={dateRange.startDate}
-              onChange={handleDateChange}
-              placeholder="Start Date"
-            />
-            <input
-              type="date"
-              name="endDate"
-              value={dateRange.endDate}
-              onChange={handleDateChange}
-              placeholder="End Date"
-            />
-            <button onClick={applyDateFilter} className="btn-primary">Apply Filter</button>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <div className="date-filter">
+              <input
+                type="date"
+                name="startDate"
+                value={dateRange.startDate}
+                onChange={handleDateChange}
+                placeholder="Start Date"
+              />
+              <input
+                type="date"
+                name="endDate"
+                value={dateRange.endDate}
+                onChange={handleDateChange}
+                placeholder="End Date"
+              />
+              <button onClick={applyDateFilter} className="btn-primary">Apply Filter</button>
+            </div>
+            {user?.role === 'admin' && (
+              <button onClick={() => setShowPrintView(true)} className="btn-print">
+                Print Reports
+              </button>
+            )}
           </div>
         </div>
 
@@ -207,6 +218,18 @@ const Reports = () => {
             )}
           </div>
         </div>
+
+        {showPrintView && (
+          <PrintableReport
+            dashboardStats={dashboardStats}
+            feeReport={feeReport}
+            withdrawalReport={withdrawalReport}
+            attendanceReport={attendanceReport}
+            quranReport={quranReport}
+            dateRange={dateRange}
+            onClose={() => setShowPrintView(false)}
+          />
+        )}
       </div>
     </Layout>
   );
