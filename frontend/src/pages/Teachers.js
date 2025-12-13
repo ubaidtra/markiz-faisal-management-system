@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Layout from '../components/Layout';
 import axios from 'axios';
 import API_URL from '../utils/api';
@@ -25,12 +25,9 @@ const Teachers = () => {
     status: 'active'
   });
 
-  useEffect(() => {
-    fetchTeachers();
-  }, []);
-
-  const fetchTeachers = async () => {
+  const fetchTeachers = useCallback(async () => {
     try {
+      setLoading(true);
       const response = await axios.get(`${API_URL}/teachers`, {
         params: { search: searchTerm }
       });
@@ -40,11 +37,11 @@ const Teachers = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchTerm]);
 
   useEffect(() => {
     fetchTeachers();
-  }, [searchTerm]);
+  }, [fetchTeachers]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -291,8 +288,10 @@ const Teachers = () => {
                       </span>
                     </td>
                     <td>
-                      <button onClick={() => handleEdit(teacher)} className="btn-edit">Edit</button>
-                      <button onClick={() => handleDelete(teacher._id)} className="btn-delete">Delete</button>
+                      <div className="action-buttons">
+                        <button onClick={() => handleEdit(teacher)} className="btn-edit">Edit</button>
+                        <button onClick={() => handleDelete(teacher._id)} className="btn-delete">Delete</button>
+                      </div>
                     </td>
                   </tr>
                 ))}

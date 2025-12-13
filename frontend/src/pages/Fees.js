@@ -270,8 +270,10 @@ const Fees = () => {
                       </span>
                     </td>
                     <td>
-                      <button onClick={() => handleEdit(fee)} className="btn-edit">Edit</button>
-                      <button onClick={() => handleDelete(fee._id)} className="btn-delete">Delete</button>
+                      <div className="action-buttons">
+                        <button onClick={() => handleEdit(fee)} className="btn-edit">Edit</button>
+                        <button onClick={() => handleDelete(fee._id)} className="btn-delete">Delete</button>
+                      </div>
                     </td>
                   </tr>
                 ))}

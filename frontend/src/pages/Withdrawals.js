@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Layout from '../components/Layout';
 import axios from 'axios';
 import API_URL from '../utils/api';
@@ -29,12 +29,9 @@ const Withdrawals = () => {
     notes: ''
   });
 
-  useEffect(() => {
-    fetchWithdrawals();
-  }, [filters]);
-
-  const fetchWithdrawals = async () => {
+  const fetchWithdrawals = useCallback(async () => {
     try {
+      setLoading(true);
       const params = {};
       if (filters.status) params.status = filters.status;
       if (filters.category) params.category = filters.category;
@@ -49,7 +46,11 @@ const Withdrawals = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
+
+  useEffect(() => {
+    fetchWithdrawals();
+  }, [fetchWithdrawals]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -367,8 +368,10 @@ const Withdrawals = () => {
                             <button onClick={() => handleReject(withdrawal._id)} className="btn-reject">Reject</button>
                           </>
                         )}
-                        <button onClick={() => handleEdit(withdrawal)} className="btn-edit">Edit</button>
-                        <button onClick={() => handleDelete(withdrawal._id)} className="btn-delete">Delete</button>
+                        <div className="action-buttons">
+                          <button onClick={() => handleEdit(withdrawal)} className="btn-edit">Edit</button>
+                          <button onClick={() => handleDelete(withdrawal._id)} className="btn-delete">Delete</button>
+                        </div>
                       </div>
                     </td>
                   </tr>

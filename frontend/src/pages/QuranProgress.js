@@ -276,8 +276,10 @@ const QuranProgress = () => {
                     <td>{item.grade || '-'}</td>
                     <td>{new Date(item.createdAt).toLocaleDateString()}</td>
                     <td>
-                      <button onClick={() => handleEdit(item)} className="btn-edit">Edit</button>
-                      <button onClick={() => handleDelete(item._id)} className="btn-delete">Delete</button>
+                      <div className="action-buttons">
+                        <button onClick={() => handleEdit(item)} className="btn-edit">Edit</button>
+                        <button onClick={() => handleDelete(item._id)} className="btn-delete">Delete</button>
+                      </div>
                     </td>
                   </tr>
                 ))}

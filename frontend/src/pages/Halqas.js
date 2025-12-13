@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Layout from '../components/Layout';
 import axios from 'axios';
 import API_URL from '../utils/api';
@@ -28,14 +28,9 @@ const Halqas = () => {
     status: 'active'
   });
 
-  useEffect(() => {
-    fetchHalqas();
-    fetchTeachers();
-    fetchStudents();
-  }, []);
-
-  const fetchHalqas = async () => {
+  const fetchHalqas = useCallback(async () => {
     try {
+      setLoading(true);
       const response = await axios.get(`${API_URL}/halqas`, {
         params: { search: searchTerm }
       });
@@ -45,11 +40,16 @@ const Halqas = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [searchTerm]);
 
   useEffect(() => {
     fetchHalqas();
-  }, [searchTerm]);
+  }, [fetchHalqas]);
+
+  useEffect(() => {
+    fetchTeachers();
+    fetchStudents();
+  }, []);
 
   const fetchTeachers = async () => {
     try {
@@ -435,8 +435,10 @@ const Halqas = () => {
                 </div>
                 <div className="halqa-card-actions">
                   <button onClick={() => handleViewDetails(halqa._id)} className="btn-view">View Details</button>
-                  <button onClick={() => handleEdit(halqa)} className="btn-edit">Edit</button>
-                  <button onClick={() => handleDelete(halqa._id)} className="btn-delete">Delete</button>
+                  <div className="action-buttons">
+                    <button onClick={() => handleEdit(halqa)} className="btn-edit">Edit</button>
+                    <button onClick={() => handleDelete(halqa._id)} className="btn-delete">Delete</button>
+                  </div>
                 </div>
               </div>
             ))}
