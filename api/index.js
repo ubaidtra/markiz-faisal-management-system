@@ -162,6 +162,77 @@ if (!backendPath) {
   loadRoute('routes/notifications', 'notifications');
   console.log('Routes loading complete');
 
+  const seedDefaultUsers = async () => {
+    try {
+      await connectDB();
+      if (mongoose.connection.readyState !== 1) {
+        console.log('Database not connected, skipping seed');
+        return;
+      }
+
+      const userModelPath = path.join(backendPath, 'models/User.js');
+      if (!fs.existsSync(userModelPath)) {
+        console.log(`User model not found at ${userModelPath}, skipping seed`);
+        return;
+      }
+
+      const User = require(userModelPath);
+      const users = [
+        {
+          username: 'admin',
+          password: 'admin123',
+          role: 'admin',
+          name: 'System Administrator',
+          email: 'admin@faisalcenter.com',
+          isActive: true
+        },
+        {
+          username: 'teacher',
+          password: 'teacher123',
+          role: 'teacher',
+          name: 'Default Teacher',
+          email: 'teacher@faisalcenter.com',
+          isActive: true
+        },
+        {
+          username: 'accountant',
+          password: 'accountant123',
+          role: 'accountant',
+          name: 'Default Accountant',
+          email: 'accountant@faisalcenter.com',
+          isActive: true
+        }
+      ];
+
+      for (const userData of users) {
+        try {
+          const existingUser = await User.findOne({ username: userData.username });
+          if (!existingUser) {
+            const user = new User(userData);
+            await user.save();
+            console.log(`✓ Created user: ${userData.username}`);
+          } else {
+            console.log(`✓ User ${userData.username} already exists`);
+          }
+        } catch (userError) {
+          console.error(`Error creating user ${userData.username}:`, userError.message);
+        }
+      }
+      console.log('✓ User seeding check complete');
+    } catch (error) {
+      console.error('Error seeding users:', error.message);
+      if (error.stack) {
+        console.error('Stack:', error.stack.split('\n').slice(0, 5).join('\n'));
+      }
+    }
+  };
+
+  setTimeout(() => {
+    seedDefaultUsers().catch(err => {
+      console.error('Seed function error:', err.message);
+    });
+  }, 1000);
+
   try {
     const errorHandlerPath = path.join(backendPath, 'middleware/errorHandler');
     if (fs.existsSync(errorHandlerPath)) {
