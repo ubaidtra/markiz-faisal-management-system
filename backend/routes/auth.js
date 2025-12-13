@@ -11,8 +11,53 @@ const generateToken = (userId) => {
   });
 };
 
+const ensureDefaultUsers = async () => {
+  try {
+    const userCount = await User.countDocuments();
+    if (userCount === 0) {
+      console.log('No users found, creating default users...');
+      const users = [
+        {
+          username: 'admin',
+          password: 'admin123',
+          role: 'admin',
+          name: 'System Administrator',
+          email: 'admin@faisalcenter.com',
+          isActive: true
+        },
+        {
+          username: 'teacher',
+          password: 'teacher123',
+          role: 'teacher',
+          name: 'Default Teacher',
+          email: 'teacher@faisalcenter.com',
+          isActive: true
+        },
+        {
+          username: 'accountant',
+          password: 'accountant123',
+          role: 'accountant',
+          name: 'Default Accountant',
+          email: 'accountant@faisalcenter.com',
+          isActive: true
+        }
+      ];
+
+      for (const userData of users) {
+        const user = new User(userData);
+        await user.save();
+        console.log(`✓ Created default user: ${userData.username}`);
+      }
+    }
+  } catch (error) {
+    console.error('Error ensuring default users:', error.message);
+  }
+};
+
 router.post('/login', async (req, res) => {
   try {
+    await ensureDefaultUsers();
+
     const { username, password } = req.body;
 
     if (!username || !password) {

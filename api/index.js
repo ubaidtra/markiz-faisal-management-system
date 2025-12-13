@@ -150,18 +150,6 @@ if (!backendPath) {
     }
   };
 
-  console.log('Loading routes...');
-  loadRoute('routes/auth', 'auth');
-  loadRoute('routes/students', 'students');
-  loadRoute('routes/teachers', 'teachers');
-  loadRoute('routes/halqas', 'halqas');
-  loadRoute('routes/quranProgress', 'quran-progress');
-  loadRoute('routes/fees', 'fees');
-  loadRoute('routes/withdrawals', 'withdrawals');
-  loadRoute('routes/reports', 'reports');
-  loadRoute('routes/notifications', 'notifications');
-  console.log('Routes loading complete');
-
   const seedDefaultUsers = async () => {
     try {
       await connectDB();
@@ -227,11 +215,23 @@ if (!backendPath) {
     }
   };
 
-  setTimeout(() => {
-    seedDefaultUsers().catch(err => {
-      console.error('Seed function error:', err.message);
-    });
-  }, 1000);
+  (async () => {
+    await seedDefaultUsers();
+  })().catch(err => {
+    console.error('Seed initialization error:', err.message);
+  });
+
+  console.log('Loading routes...');
+  loadRoute('routes/auth', 'auth');
+  loadRoute('routes/students', 'students');
+  loadRoute('routes/teachers', 'teachers');
+  loadRoute('routes/halqas', 'halqas');
+  loadRoute('routes/quranProgress', 'quran-progress');
+  loadRoute('routes/fees', 'fees');
+  loadRoute('routes/withdrawals', 'withdrawals');
+  loadRoute('routes/reports', 'reports');
+  loadRoute('routes/notifications', 'notifications');
+  console.log('Routes loading complete');
 
   try {
     const errorHandlerPath = path.join(backendPath, 'middleware/errorHandler');
