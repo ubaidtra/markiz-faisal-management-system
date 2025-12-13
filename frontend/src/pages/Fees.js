@@ -153,7 +153,6 @@ const Fees = () => {
                     >
                       <option value="tuition">Monthly Tuition</option>
                       <option value="registration">Registration</option>
-                      <option value="exam">Exam</option>
                       <option value="other">Other</option>
                     </select>
                   </div>

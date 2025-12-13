@@ -8,7 +8,7 @@ const feeSchema = new mongoose.Schema({
   },
   feeType: {
     type: String,
-    enum: ['tuition', 'registration', 'exam', 'other'],
+    enum: ['tuition', 'registration', 'other'],
     required: true
   },
   amount: {
