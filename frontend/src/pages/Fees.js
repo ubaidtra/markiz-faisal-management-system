@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Layout from '../components/Layout';
+import Receipt from '../components/Receipt';
 import axios from 'axios';
 import API_URL from '../utils/api';
 import { formatCurrency } from '../utils/currency';
+import { AuthContext } from '../context/AuthContext';
 import './Fees.css';
 
 const Fees = () => {
+  const { user } = useContext(AuthContext);
   const [fees, setFees] = useState([]);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingFee, setEditingFee] = useState(null);
+  const [selectedFeeForReceipt, setSelectedFeeForReceipt] = useState(null);
   const [formData, setFormData] = useState({
     student: '',
     feeType: 'tuition',
@@ -277,6 +281,15 @@ const Fees = () => {
                     </td>
                     <td>
                       <div className="action-buttons">
+                        {fee.status === 'paid' && user?.role === 'admin' && (
+                          <button 
+                            onClick={() => setSelectedFeeForReceipt(fee)} 
+                            className="btn-print"
+                            title="Print Receipt"
+                          >
+                            Print Receipt
+                          </button>
+                        )}
                         <button onClick={() => handleEdit(fee)} className="btn-edit">Edit</button>
                         <button onClick={() => handleDelete(fee._id)} className="btn-delete">Delete</button>
                       </div>
@@ -289,6 +302,13 @@ const Fees = () => {
               <div className="empty-state">No fee records found</div>
             )}
           </div>
+        )}
+
+        {selectedFeeForReceipt && (
+          <Receipt 
+            fee={selectedFeeForReceipt} 
+            onClose={() => setSelectedFeeForReceipt(null)} 
+          />
         )}
       </div>
     </Layout>
