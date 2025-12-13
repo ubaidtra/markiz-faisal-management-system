@@ -285,7 +285,7 @@ const Reports = () => {
             withdrawalReport={withdrawalReport}
             attendanceReport={attendanceReport}
             quranReport={quranReport}
-            dateRange={dateRange}
+            dateRange={appliedDateRange}
             onClose={() => setShowPrintView(false)}
           />
         )}
