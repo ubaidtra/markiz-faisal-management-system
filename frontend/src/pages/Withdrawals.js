@@ -368,10 +368,8 @@ const Withdrawals = () => {
                             <button onClick={() => handleReject(withdrawal._id)} className="btn-reject">Reject</button>
                           </>
                         )}
-                        <div className="action-buttons">
-                          <button onClick={() => handleEdit(withdrawal)} className="btn-edit">Edit</button>
-                          <button onClick={() => handleDelete(withdrawal._id)} className="btn-delete">Delete</button>
-                        </div>
+                        <button onClick={() => handleEdit(withdrawal)} className="btn-edit">Edit</button>
+                        <button onClick={() => handleDelete(withdrawal._id)} className="btn-delete">Delete</button>
                       </div>
                     </td>
                   </tr>
