@@ -108,16 +108,30 @@ const getBackendPath = () => {
 const backendPath = getBackendPath();
 
 if (!backendPath) {
+  console.error('CRITICAL: Backend folder not found!');
+  console.error('__dirname:', __dirname);
+  console.error('process.cwd():', process.cwd());
+  console.error('Searched paths:', [
+    path.join(process.cwd(), 'backend'),
+    path.join(__dirname, '../backend'),
+    path.resolve(__dirname, '../backend'),
+  ]);
+  
   app.use('/api/*', (req, res) => {
+    console.error(`API request to ${req.path} - Backend folder not found`);
     res.status(500).json({ 
       message: 'Backend folder not found in serverless function',
+      error: 'Backend routes cannot be loaded',
       debug: {
         __dirname: __dirname,
         cwd: process.cwd(),
         searchedPaths: [
           path.join(process.cwd(), 'backend'),
           path.join(__dirname, '../backend'),
-        ]
+          path.resolve(__dirname, '../backend'),
+        ],
+        filesInCwd: fs.existsSync(process.cwd()) ? fs.readdirSync(process.cwd()).slice(0, 10) : 'cwd does not exist',
+        filesInApiDir: fs.existsSync(__dirname) ? fs.readdirSync(__dirname).slice(0, 10) : 'api dir does not exist'
       }
     });
   });
