@@ -15,6 +15,12 @@ const feeSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  period: {
+    type: String,
+    required: function() {
+      return this.feeType === 'tuition';
+    }
+  },
   dueDate: {
     type: Date,
     required: true

@@ -15,6 +15,7 @@ const Fees = () => {
     student: '',
     feeType: 'tuition',
     amount: '',
+    period: '',
     dueDate: '',
     paymentMethod: '',
     notes: ''
@@ -23,6 +24,11 @@ const Fees = () => {
   useEffect(() => {
     fetchFees();
     fetchStudents();
+    const currentDate = new Date();
+    const currentMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
+    if (!formData.period) {
+      setFormData(prev => ({ ...prev, period: currentMonth }));
+    }
   }, []);
 
   const fetchFees = async () => {
@@ -73,6 +79,7 @@ const Fees = () => {
       student: fee.student._id || fee.student,
       feeType: fee.feeType,
       amount: fee.amount.toString(),
+      period: fee.period || '',
       dueDate: fee.dueDate ? new Date(fee.dueDate).toISOString().split('T')[0] : '',
       paidAmount: fee.paidAmount?.toString() || '',
       paymentMethod: fee.paymentMethod || '',
@@ -93,10 +100,13 @@ const Fees = () => {
   };
 
   const resetForm = () => {
+    const currentDate = new Date();
+    const currentMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
     setFormData({
       student: '',
       feeType: 'tuition',
       amount: '',
+      period: currentMonth,
       dueDate: '',
       paymentMethod: '',
       notes: ''
@@ -141,12 +151,23 @@ const Fees = () => {
                       onChange={(e) => setFormData({ ...formData, feeType: e.target.value })}
                       required
                     >
-                      <option value="tuition">Tuition</option>
+                      <option value="tuition">Monthly Tuition</option>
                       <option value="registration">Registration</option>
                       <option value="exam">Exam</option>
                       <option value="other">Other</option>
                     </select>
                   </div>
+                  {formData.feeType === 'tuition' && (
+                    <div className="form-group">
+                      <label>Month *</label>
+                      <input
+                        type="month"
+                        value={formData.period}
+                        onChange={(e) => setFormData({ ...formData, period: e.target.value })}
+                        required
+                      />
+                    </div>
+                  )}
                   <div className="form-group">
                     <label>Amount (GMD) *</label>
                     <input
@@ -154,7 +175,7 @@ const Fees = () => {
                       step="0.01"
                       value={formData.amount}
                       onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                      placeholder="Enter amount in GMD"
+                      placeholder={formData.feeType === 'tuition' ? 'Monthly tuition amount' : 'Enter amount in GMD'}
                       required
                     />
                   </div>
@@ -223,6 +244,7 @@ const Fees = () => {
                 <tr>
                   <th>Student</th>
                   <th>Fee Type</th>
+                  <th>Period</th>
                   <th>Amount</th>
                   <th>Paid</th>
                   <th>Due Date</th>
@@ -238,7 +260,8 @@ const Fees = () => {
                       <br />
                       <small>{fee.student?.studentId}</small>
                     </td>
-                    <td>{fee.feeType}</td>
+                    <td>{fee.feeType === 'tuition' ? 'Monthly Tuition' : fee.feeType}</td>
+                    <td>{fee.period ? new Date(fee.period + '-01').toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) : '-'}</td>
                     <td>{formatCurrency(fee.amount)}</td>
                     <td>{formatCurrency(fee.paidAmount || 0)}</td>
                     <td>{new Date(fee.dueDate).toLocaleDateString()}</td>
