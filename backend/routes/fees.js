@@ -54,7 +54,7 @@ router.post('/', auth, authorize('admin', 'accountant'), async (req, res) => {
     // If payment method is provided, it means payment is registered and fee is paid
     if (feeData.paymentMethod) {
       feeData.status = 'paid';
-      feeData.paidAmount = feeData.amount || feeData.paidAmount || feeData.amount;
+      feeData.paidAmount = feeData.paidAmount || feeData.amount;
       feeData.paidDate = new Date();
     }
 
