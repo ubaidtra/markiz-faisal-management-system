@@ -129,10 +129,11 @@ const Reports = () => {
                     id="startDate"
                     type="date"
                     name="startDate"
-                    value={dateRange.startDate}
+                    value={dateRange.startDate || ''}
                     onChange={handleDateChange}
-                    max={dateRange.endDate || ''}
+                    max={dateRange.endDate || undefined}
                     className={dateError && dateRange.startDate && dateRange.endDate ? 'date-input-error' : ''}
+                    placeholder="Select start date"
                   />
                 </div>
                 <div className="date-input-group">
@@ -141,10 +142,11 @@ const Reports = () => {
                     id="endDate"
                     type="date"
                     name="endDate"
-                    value={dateRange.endDate}
+                    value={dateRange.endDate || ''}
                     onChange={handleDateChange}
-                    min={dateRange.startDate || ''}
+                    min={dateRange.startDate || undefined}
                     className={dateError && dateRange.startDate && dateRange.endDate ? 'date-input-error' : ''}
+                    placeholder="Select end date"
                   />
                 </div>
                 <div className="date-filter-buttons">
