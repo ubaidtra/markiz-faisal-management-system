@@ -6,7 +6,10 @@
       "use": "@vercel/node",
       "config": {
         "includeFiles": [
-          "backend/**"
+          "backend/**",
+          "backend/routes/**",
+          "backend/models/**",
+          "backend/middleware/**"
         ]
       }
     },
