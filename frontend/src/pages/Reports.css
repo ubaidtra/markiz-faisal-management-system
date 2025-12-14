@@ -6,118 +6,24 @@
   border: 1px solid var(--border-color);
 }
 
-.reports-header-actions {
-  display: flex;
-  gap: 1.5rem;
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-
-.date-filter-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
 .date-filter {
   display: flex;
   gap: 1rem;
-  align-items: flex-end;
-  flex-wrap: wrap;
+  align-items: center;
 }
 
-.date-input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.date-input-group label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.date-filter input,
-.date-filter select {
-  padding: 0.75rem;
+.date-filter input {
+  padding: 0.5rem;
   border: 2px solid var(--border-color);
   border-radius: 8px;
   transition: all 0.3s;
   background: var(--bg-secondary);
-  color: var(--text-primary);
-  font-size: 0.95rem;
-  min-width: 160px;
-}
-
-.date-filter select {
-  cursor: pointer;
 }
 
 .date-filter input:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
-}
-
-.date-filter input:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.date-filter input.date-input-error {
-  border-color: var(--error-color);
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-}
-
-.date-filter-buttons {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-.date-error {
-  color: var(--error-color);
-  font-size: 0.85rem;
-  font-weight: 500;
-  margin-top: 0.25rem;
-}
-
-.date-filter-info {
-  color: var(--text-secondary);
-  font-size: 0.85rem;
-  font-style: italic;
-  margin-top: 0.25rem;
-}
-
-@media (max-width: 768px) {
-  .reports-header-actions {
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .date-filter {
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
-  }
-
-  .date-input-group {
-    width: 100%;
-  }
-
-  .date-filter input {
-    width: 100%;
-    min-width: auto;
-  }
-
-  .date-filter-buttons {
-    width: 100%;
-  }
-
-  .date-filter-buttons button {
-    flex: 1;
-  }
 }
 
 .reports-grid {

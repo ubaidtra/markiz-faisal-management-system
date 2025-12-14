@@ -266,6 +266,7 @@ if (!backendPath) {
   loadRoute('routes/halqas', 'halqas');
   loadRoute('routes/quranProgress', 'quran-progress');
   loadRoute('routes/fees', 'fees');
+  loadRoute('routes/feeSettings', 'fee-settings');
   loadRoute('routes/withdrawals', 'withdrawals');
   loadRoute('routes/reports', 'reports');
   loadRoute('routes/notifications', 'notifications');

@@ -42,3 +42,5 @@ Check Vercel deployment logs for specific errors. Common issues:
 - MongoDB connection issues (check network access)
 - Frontend build errors (check React build logs)
 
+
+

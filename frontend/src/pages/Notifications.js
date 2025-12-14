@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import Layout from '../components/Layout';
 import axios from 'axios';
 import API_URL from '../utils/api';
@@ -18,17 +18,7 @@ const Notifications = () => {
     recipientType: 'all'
   });
 
-  useEffect(() => {
-    fetchNotifications();
-    fetchUnreadCount();
-    const interval = setInterval(() => {
-      fetchNotifications();
-      fetchUnreadCount();
-    }, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/notifications`);
       setNotifications(response.data);
@@ -37,16 +27,26 @@ const Notifications = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchUnreadCount = async () => {
+  const fetchUnreadCount = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/notifications/unread`);
       setUnreadCount(response.data.count);
     } catch (error) {
       console.error('Error fetching unread count:', error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchNotifications();
+    fetchUnreadCount();
+    const interval = setInterval(() => {
+      fetchNotifications();
+      fetchUnreadCount();
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [fetchNotifications, fetchUnreadCount]);
 
   const handleMarkAsRead = async (id) => {
     try {

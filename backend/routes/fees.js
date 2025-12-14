@@ -1,5 +1,6 @@
 const express = require('express');
 const Fee = require('../models/Fee');
+const SchoolFeeSettings = require('../models/SchoolFeeSettings');
 const { auth, authorize } = require('../middleware/auth');
 
 const router = express.Router();
@@ -119,6 +120,23 @@ router.delete('/:id', auth, authorize('admin'), async (req, res) => {
 router.get('/student/:studentId/summary', auth, async (req, res) => {
   try {
     const fees = await Fee.find({ student: req.params.studentId });
+    const currentYear = new Date().getFullYear();
+    const currentYearStart = new Date(currentYear, 0, 1);
+    const currentYearEnd = new Date(currentYear, 11, 31);
+    
+    const tuitionFees = fees.filter(f => f.feeType === 'tuition');
+    const currentYearTuitionFees = tuitionFees.filter(f => {
+      const feeDate = new Date(f.period + '-01');
+      return feeDate >= currentYearStart && feeDate <= currentYearEnd;
+    });
+    
+    const settings = await SchoolFeeSettings.getSettings();
+    const monthlyTuitionFee = settings.tuitionFee;
+    const expectedYearlyTuition = monthlyTuitionFee * 12;
+    
+    const totalTuitionPaid = currentYearTuitionFees.reduce((sum, f) => sum + (f.paidAmount || 0), 0);
+    const totalTuitionExpected = currentYearTuitionFees.reduce((sum, f) => sum + f.amount, 0);
+    const pendingYearlyTuition = expectedYearlyTuition - totalTuitionPaid;
     
     const summary = {
       totalFees: fees.reduce((sum, f) => sum + f.amount, 0),
@@ -127,10 +145,86 @@ router.get('/student/:studentId/summary', auth, async (req, res) => {
       totalOverdue: fees.filter(f => f.status === 'overdue').reduce((sum, f) => sum + (f.amount - f.paidAmount), 0),
       pendingCount: fees.filter(f => f.status === 'pending').length,
       paidCount: fees.filter(f => f.status === 'paid').length,
-      overdueCount: fees.filter(f => f.status === 'overdue').length
+      overdueCount: fees.filter(f => f.status === 'overdue').length,
+      yearlyTuition: {
+        expectedYearly: expectedYearlyTuition,
+        monthlyFee: monthlyTuitionFee,
+        totalPaid: totalTuitionPaid,
+        totalExpected: totalTuitionExpected,
+        pending: pendingYearlyTuition,
+        paidMonths: currentYearTuitionFees.filter(f => f.status === 'paid').length,
+        totalMonths: currentYearTuitionFees.length
+      }
     };
     
     res.json(summary);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+router.get('/yearly-summary', auth, async (req, res) => {
+  try {
+    const { year } = req.query;
+    const currentYear = year ? parseInt(year) : new Date().getFullYear();
+    const yearStart = new Date(currentYear, 0, 1);
+    const yearEnd = new Date(currentYear, 11, 31);
+    
+    const settings = await SchoolFeeSettings.getSettings();
+    const monthlyTuitionFee = settings.tuitionFee;
+    const expectedYearlyTuition = monthlyTuitionFee * 12;
+    
+    const allFees = await Fee.find({
+      feeType: 'tuition',
+      period: {
+        $gte: `${currentYear}-01`,
+        $lte: `${currentYear}-12`
+      }
+    }).populate('student', 'firstName lastName studentId');
+    
+    const studentSummary = {};
+    
+    allFees.forEach(fee => {
+      const studentId = fee.student._id.toString();
+      if (!studentSummary[studentId]) {
+        studentSummary[studentId] = {
+          student: {
+            _id: fee.student._id,
+            firstName: fee.student.firstName,
+            lastName: fee.student.lastName,
+            studentId: fee.student.studentId
+          },
+          expectedYearly: expectedYearlyTuition,
+          monthlyFee: monthlyTuitionFee,
+          totalPaid: 0,
+          totalExpected: 0,
+          paidMonths: 0,
+          totalMonths: 0,
+          fees: []
+        };
+      }
+      
+      studentSummary[studentId].totalPaid += fee.paidAmount || 0;
+      studentSummary[studentId].totalExpected += fee.amount;
+      studentSummary[studentId].totalMonths += 1;
+      if (fee.status === 'paid') {
+        studentSummary[studentId].paidMonths += 1;
+      }
+      studentSummary[studentId].fees.push(fee);
+    });
+    
+    const summary = Object.values(studentSummary).map(s => ({
+      ...s,
+      pending: s.expectedYearly - s.totalPaid,
+      remainingMonths: 12 - s.totalMonths
+    }));
+    
+    res.json({
+      year: currentYear,
+      monthlyTuitionFee,
+      expectedYearlyTuition,
+      students: summary
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
