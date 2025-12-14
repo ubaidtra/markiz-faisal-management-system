@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { 
   FiLayout, FiUsers, FiUser, FiBook, FiDollarSign, 
-  FiTrendingDown, FiBarChart2, FiBell 
+  FiTrendingDown, FiBarChart2, FiBell, FiSettings
 } from 'react-icons/fi';
 import { FaMosque } from 'react-icons/fa';
 import './Layout.css';
@@ -33,6 +33,7 @@ const Layout = ({ children }) => {
     { path: '/halqas', label: 'Halqas', icon: FaMosque, color: 'var(--color-teal)', roles: ['admin'] },
     { path: '/quran-progress', label: 'Quran Progress', icon: FiBook, color: 'var(--secondary-color)', roles: ['admin', 'teacher'] },
     { path: '/fees', label: 'Fees', icon: FiDollarSign, color: 'var(--color-amber)', roles: ['admin', 'accountant'] },
+    { path: '/fee-settings', label: 'Fee Settings', icon: FiSettings, color: 'var(--color-orange)', roles: ['admin'] },
     { path: '/withdrawals', label: 'Withdrawals', icon: FiTrendingDown, color: 'var(--color-rose)', roles: ['admin', 'accountant'] },
     { path: '/reports', label: 'Reports', icon: FiBarChart2, color: 'var(--color-cyan)', roles: ['admin', 'teacher', 'accountant'] },
     { path: '/notifications', label: 'Notifications', icon: FiBell, color: 'var(--color-pink)', roles: ['admin', 'teacher', 'accountant'] }

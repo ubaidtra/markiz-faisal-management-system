@@ -35,6 +35,7 @@ app.use('/api/teachers', require('./routes/teachers'));
 app.use('/api/halqas', require('./routes/halqas'));
 app.use('/api/quran-progress', require('./routes/quranProgress'));
 app.use('/api/fees', require('./routes/fees'));
+app.use('/api/fee-settings', require('./routes/feeSettings'));
 app.use('/api/withdrawals', require('./routes/withdrawals'));
 app.use('/api/reports', require('./routes/reports'));
 app.use('/api/notifications', require('./routes/notifications'));

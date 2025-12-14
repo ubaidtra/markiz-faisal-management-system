@@ -10,6 +10,7 @@ import Teachers from './pages/Teachers';
 import Halqas from './pages/Halqas';
 import QuranProgress from './pages/QuranProgress';
 import Fees from './pages/Fees';
+import FeeSettings from './pages/FeeSettings';
 import Withdrawals from './pages/Withdrawals';
 import Reports from './pages/Reports';
 import Notifications from './pages/Notifications';
@@ -68,6 +69,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Fees />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/fee-settings"
+            element={
+              <PrivateRoute>
+                <FeeSettings />
               </PrivateRoute>
             }
           />
