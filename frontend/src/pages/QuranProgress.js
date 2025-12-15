@@ -207,7 +207,7 @@ const QuranProgress = () => {
                       <option value="">Select From Ayah</option>
                       {formData.surah && getAyahOptions(formData.surah).map(ayah => (
                         <option key={ayah} value={ayah}>
-                          {ayah}
+                          Ayah {ayah}
                         </option>
                       ))}
                     </select>
@@ -225,7 +225,7 @@ const QuranProgress = () => {
                         .filter(ayah => ayah >= parseInt(formData.fromAyah))
                         .map(ayah => (
                           <option key={ayah} value={ayah}>
-                            {ayah}
+                            Ayah {ayah}
                           </option>
                         ))}
                     </select>
