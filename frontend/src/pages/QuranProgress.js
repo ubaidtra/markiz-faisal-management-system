@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import axios from 'axios';
 import API_URL from '../utils/api';
+import { surahs, getAyahOptions } from '../utils/surahs';
 import './QuranProgress.css';
 
 const QuranProgress = () => {
@@ -165,33 +166,69 @@ const QuranProgress = () => {
                   </div>
                   <div className="form-group">
                     <label>Surah *</label>
-                    <input
-                      type="text"
+                    <select
                       value={formData.surah}
-                      onChange={(e) => setFormData({ ...formData, surah: e.target.value })}
-                      placeholder="e.g., Al-Fatiha"
+                      onChange={(e) => {
+                        const selectedSurah = e.target.value;
+                        setFormData({ 
+                          ...formData, 
+                          surah: selectedSurah,
+                          fromAyah: '',
+                          toAyah: ''
+                        });
+                      }}
                       required
-                    />
+                    >
+                      <option value="">Select Surah</option>
+                      {surahs.map(surah => (
+                        <option key={surah.number} value={surah.name}>
+                          {surah.number}. {surah.name} ({surah.ayahs} ayahs)
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
                 <div className="form-row">
                   <div className="form-group">
                     <label>From Ayah *</label>
-                    <input
-                      type="number"
+                    <select
                       value={formData.fromAyah}
-                      onChange={(e) => setFormData({ ...formData, fromAyah: e.target.value })}
+                      onChange={(e) => {
+                        const fromAyah = parseInt(e.target.value);
+                        setFormData({ 
+                          ...formData, 
+                          fromAyah: e.target.value,
+                          toAyah: formData.toAyah && parseInt(formData.toAyah) < fromAyah ? e.target.value : formData.toAyah
+                        });
+                      }}
                       required
-                    />
+                      disabled={!formData.surah}
+                    >
+                      <option value="">Select From Ayah</option>
+                      {formData.surah && getAyahOptions(formData.surah).map(ayah => (
+                        <option key={ayah} value={ayah}>
+                          {ayah}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div className="form-group">
                     <label>To Ayah *</label>
-                    <input
-                      type="number"
+                    <select
                       value={formData.toAyah}
                       onChange={(e) => setFormData({ ...formData, toAyah: e.target.value })}
                       required
-                    />
+                      disabled={!formData.surah || !formData.fromAyah}
+                    >
+                      <option value="">Select To Ayah</option>
+                      {formData.surah && formData.fromAyah && getAyahOptions(formData.surah)
+                        .filter(ayah => ayah >= parseInt(formData.fromAyah))
+                        .map(ayah => (
+                          <option key={ayah} value={ayah}>
+                            {ayah}
+                          </option>
+                        ))}
+                    </select>
                   </div>
                   <div className="form-group">
                     <label>Status *</label>
