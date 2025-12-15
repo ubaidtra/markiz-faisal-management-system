@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Layout from '../components/Layout';
 import axios from 'axios';
 import API_URL from '../utils/api';
 import { surahs, getAyahOptions } from '../utils/surahs';
-import { getAyahDisplayText } from '../utils/ayahTexts';
+import { loadAyahTexts, getAyahDisplayText } from '../utils/ayahTexts';
 import './QuranProgress.css';
 
 const QuranProgress = () => {
@@ -13,6 +13,7 @@ const QuranProgress = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingProgress, setEditingProgress] = useState(null);
+  const [ayahTextsLoaded, setAyahTextsLoaded] = useState(false);
   const [formData, setFormData] = useState({
     student: '',
     teacher: '',
@@ -169,7 +170,7 @@ const QuranProgress = () => {
                     <label>Surah *</label>
                     <select
                       value={formData.surah}
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const selectedSurah = e.target.value;
                         setFormData({ 
                           ...formData, 
@@ -177,6 +178,11 @@ const QuranProgress = () => {
                           fromAyah: '',
                           toAyah: ''
                         });
+                        if (selectedSurah) {
+                          setAyahTextsLoaded(false);
+                          await loadAyahTexts(selectedSurah);
+                          setAyahTextsLoaded(true);
+                        }
                       }}
                       required
                     >
