@@ -13,7 +13,8 @@ const QuranProgress = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingProgress, setEditingProgress] = useState(null);
-  const [ayahTextsLoaded, setAyahTextsLoaded] = useState(false);
+  const [ayahTextsLoaded, setAyahTextsLoaded] = useState({});
+  const [loadingAyahTexts, setLoadingAyahTexts] = useState(false);
   const [formData, setFormData] = useState({
     student: '',
     teacher: '',
@@ -178,10 +179,11 @@ const QuranProgress = () => {
                           fromAyah: '',
                           toAyah: ''
                         });
-                        if (selectedSurah) {
-                          setAyahTextsLoaded(false);
+                        if (selectedSurah && !ayahTextsLoaded[selectedSurah]) {
+                          setLoadingAyahTexts(true);
                           await loadAyahTexts(selectedSurah);
-                          setAyahTextsLoaded(true);
+                          setAyahTextsLoaded(prev => ({ ...prev, [selectedSurah]: true }));
+                          setLoadingAyahTexts(false);
                         }
                       }}
                       required
@@ -212,10 +214,14 @@ const QuranProgress = () => {
                       disabled={!formData.surah}
                     >
                       <option value="">Select From Ayah</option>
-                      {formData.surah && getAyahOptions(formData.surah).map(ayah => (
-                        <option key={ayah} value={ayah}>
-                          {getAyahDisplayText(formData.surah, ayah)}
-                        </option>
+                      {formData.surah && (loadingAyahTexts ? (
+                        <option value="" disabled>Loading ayah texts...</option>
+                      ) : (
+                        getAyahOptions(formData.surah).map(ayah => (
+                          <option key={ayah} value={ayah}>
+                            {getAyahDisplayText(formData.surah, ayah)}
+                          </option>
+                        ))
                       ))}
                     </select>
                   </div>
@@ -228,13 +234,17 @@ const QuranProgress = () => {
                       disabled={!formData.surah || !formData.fromAyah}
                     >
                       <option value="">Select To Ayah</option>
-                      {formData.surah && formData.fromAyah && getAyahOptions(formData.surah)
-                        .filter(ayah => ayah >= parseInt(formData.fromAyah))
-                        .map(ayah => (
-                          <option key={ayah} value={ayah}>
-                            {getAyahDisplayText(formData.surah, ayah)}
-                          </option>
-                        ))}
+                      {formData.surah && formData.fromAyah && (loadingAyahTexts ? (
+                        <option value="" disabled>Loading ayah texts...</option>
+                      ) : (
+                        getAyahOptions(formData.surah)
+                          .filter(ayah => ayah >= parseInt(formData.fromAyah))
+                          .map(ayah => (
+                            <option key={ayah} value={ayah}>
+                              {getAyahDisplayText(formData.surah, ayah)}
+                            </option>
+                          ))
+                      ))}
                     </select>
                   </div>
                   <div className="form-group">

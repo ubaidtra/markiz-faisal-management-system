@@ -66,7 +66,8 @@ export const getAyahDisplayText = (surahName, ayahNumber) => {
   const text = getAyahText(surahName, ayahNumber);
   if (text) {
     const cleanText = text.replace(/<[^>]*>/g, '').trim();
-    const preview = cleanText.length > 40 ? cleanText.substring(0, 40) + '...' : cleanText;
+    const firstSentence = cleanText.split(/[\.،]/)[0].trim();
+    const preview = firstSentence.length > 50 ? firstSentence.substring(0, 50) + '...' : firstSentence;
     return `Ayah ${ayahNumber}: ${preview}`;
   }
   return `Ayah ${ayahNumber}`;
