@@ -22,7 +22,6 @@ const Students = () => {
     parentName: '',
     parentPhone: '',
     parentEmail: '',
-    class: '',
     status: 'active',
     paysTuitionFee: true
   });
@@ -76,7 +75,6 @@ const Students = () => {
       parentName: student.parentName,
       parentPhone: student.parentPhone,
       parentEmail: student.parentEmail || '',
-      class: student.class || '',
       status: student.status,
       paysTuitionFee: student.paysTuitionFee !== undefined ? student.paysTuitionFee : true
     });
@@ -107,7 +105,6 @@ const Students = () => {
       parentName: '',
       parentPhone: '',
       parentEmail: '',
-      class: '',
       status: 'active',
       paysTuitionFee: true
     });
@@ -191,14 +188,6 @@ const Students = () => {
                       <option value="male">Male</option>
                       <option value="female">Female</option>
                     </select>
-                  </div>
-                  <div className="form-group">
-                    <label>Class</label>
-                    <input
-                      type="text"
-                      value={formData.class}
-                      onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                    />
                   </div>
                 </div>
                 <div className="form-row">
@@ -298,7 +287,6 @@ const Students = () => {
                 <tr>
                   <th>ID</th>
                   <th>Name</th>
-                  <th>Class</th>
                   <th>Parent</th>
                   <th>Phone</th>
                   <th>Fee Status</th>
@@ -311,7 +299,6 @@ const Students = () => {
                   <tr key={student._id}>
                     <td>{student.studentId}</td>
                     <td>{student.firstName} {student.lastName}</td>
-                    <td>{student.class || '-'}</td>
                     <td>{student.parentName}</td>
                     <td>{student.parentPhone}</td>
                     <td>
