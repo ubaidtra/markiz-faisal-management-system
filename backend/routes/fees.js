@@ -208,12 +208,16 @@ router.get('/yearly-summary', auth, async (req, res) => {
     const yearStart = new Date(currentYear, 0, 1);
     const yearEnd = new Date(currentYear, 11, 31);
     
+    const Student = require('../models/Student');
+    const feePayingStudentIds = await Student.find({ paysTuitionFee: { $ne: false } }).distinct('_id');
+    
     const settings = await SchoolFeeSettings.getSettings();
     const monthlyTuitionFee = settings.tuitionFee;
     const expectedYearlyTuition = monthlyTuitionFee * 12;
     
     const allFees = await Fee.find({
       feeType: 'tuition',
+      student: { $in: feePayingStudentIds },
       period: {
         $gte: `${currentYear}-01`,
         $lte: `${currentYear}-12`

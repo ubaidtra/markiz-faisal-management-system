@@ -23,7 +23,8 @@ const Students = () => {
     parentPhone: '',
     parentEmail: '',
     class: '',
-    status: 'active'
+    status: 'active',
+    paysTuitionFee: true
   });
 
   const fetchStudents = useCallback(async () => {
@@ -76,7 +77,8 @@ const Students = () => {
       parentPhone: student.parentPhone,
       parentEmail: student.parentEmail || '',
       class: student.class || '',
-      status: student.status
+      status: student.status,
+      paysTuitionFee: student.paysTuitionFee !== undefined ? student.paysTuitionFee : true
     });
     setShowForm(true);
   };
@@ -106,7 +108,8 @@ const Students = () => {
       parentPhone: '',
       parentEmail: '',
       class: '',
-      status: 'active'
+      status: 'active',
+      paysTuitionFee: true
     });
     setEditingStudent(null);
     setShowForm(false);
@@ -226,6 +229,17 @@ const Students = () => {
                       <option value="graduated">Graduated</option>
                     </select>
                   </div>
+                  <div className="form-group">
+                    <label>Fee Status *</label>
+                    <select
+                      value={formData.paysTuitionFee ? 'yes' : 'no'}
+                      onChange={(e) => setFormData({ ...formData, paysTuitionFee: e.target.value === 'yes' })}
+                      required
+                    >
+                      <option value="yes">School Fee Paying Student</option>
+                      <option value="no">Non-Fee Paying Student</option>
+                    </select>
+                  </div>
                 </div>
                 <div className="form-row">
                   <div className="form-group">
@@ -287,6 +301,7 @@ const Students = () => {
                   <th>Class</th>
                   <th>Parent</th>
                   <th>Phone</th>
+                  <th>Fee Status</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
@@ -299,6 +314,11 @@ const Students = () => {
                     <td>{student.class || '-'}</td>
                     <td>{student.parentName}</td>
                     <td>{student.parentPhone}</td>
+                    <td>
+                      <span className={`status-badge ${student.paysTuitionFee !== false ? 'status-paid' : 'status-pending'}`}>
+                        {student.paysTuitionFee !== false ? 'Fee Paying' : 'Non-Fee Paying'}
+                      </span>
+                    </td>
                     <td>
                       <span className={`status-badge status-${student.status}`}>
                         {student.status}

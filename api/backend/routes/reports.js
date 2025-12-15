@@ -21,7 +21,9 @@ router.get('/dashboard', auth, async (req, res) => {
       status: 'present'
     });
     
+    const feePayingStudentIds = await Student.find({ paysTuitionFee: { $ne: false } }).distinct('_id');
     const totalFees = await Fee.aggregate([
+      { $match: { student: { $in: feePayingStudentIds } } },
       { $group: { _id: null, total: { $sum: '$amount' }, paid: { $sum: '$paidAmount' } } }
     ]);
     

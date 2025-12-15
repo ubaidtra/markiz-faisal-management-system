@@ -43,7 +43,9 @@ const Fees = () => {
   const fetchStudents = async () => {
     try {
       const response = await axios.get(`${API_URL}/students`);
-      setStudents(response.data);
+      const allStudents = response.data;
+      const feePayingStudents = allStudents.filter(student => student.paysTuitionFee !== false);
+      setStudents(feePayingStudents);
     } catch (error) {
       console.error('Error fetching students:', error);
     }

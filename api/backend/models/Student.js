@@ -56,6 +56,10 @@ const studentSchema = new mongoose.Schema({
     enum: ['active', 'inactive', 'graduated'],
     default: 'active'
   },
+  paysTuitionFee: {
+    type: Boolean,
+    default: true
+  },
   photo: {
     type: String
   }
