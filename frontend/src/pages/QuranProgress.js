@@ -3,6 +3,7 @@ import Layout from '../components/Layout';
 import axios from 'axios';
 import API_URL from '../utils/api';
 import { surahs, getAyahOptions } from '../utils/surahs';
+import { getAyahDisplayText } from '../utils/ayahTexts';
 import './QuranProgress.css';
 
 const QuranProgress = () => {
@@ -207,7 +208,7 @@ const QuranProgress = () => {
                       <option value="">Select From Ayah</option>
                       {formData.surah && getAyahOptions(formData.surah).map(ayah => (
                         <option key={ayah} value={ayah}>
-                          Ayah {ayah}
+                          {getAyahDisplayText(formData.surah, ayah)}
                         </option>
                       ))}
                     </select>
@@ -225,7 +226,7 @@ const QuranProgress = () => {
                         .filter(ayah => ayah >= parseInt(formData.fromAyah))
                         .map(ayah => (
                           <option key={ayah} value={ayah}>
-                            Ayah {ayah}
+                            {getAyahDisplayText(formData.surah, ayah)}
                           </option>
                         ))}
                     </select>
