@@ -20,7 +20,6 @@ const Fees = () => {
     feeType: 'tuition',
     amount: '',
     selectedMonths: [],
-    dueDate: '',
     paymentMethod: '',
     notes: ''
   });
@@ -83,7 +82,6 @@ const Fees = () => {
           student: formData.student,
           feeType: formData.feeType,
           amount: parseFloat(formData.amount),
-          dueDate: formData.dueDate,
           paymentMethod: formData.paymentMethod || '',
           notes: formData.notes || ''
         };
@@ -146,7 +144,6 @@ const Fees = () => {
       feeType: 'tuition',
       amount: '',
       selectedMonths: [],
-      dueDate: '',
       paymentMethod: '',
       notes: ''
     });
@@ -274,15 +271,6 @@ const Fees = () => {
                   </div>
                 </div>
                 <div className="form-row">
-                  <div className="form-group">
-                    <label>Due Date *</label>
-                    <input
-                      type="date"
-                      value={formData.dueDate}
-                      onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                      required
-                    />
-                  </div>
                   {editingFee && (
                     <div className="form-group">
                       <label>Paid Amount (GMD)</label>
@@ -340,7 +328,6 @@ const Fees = () => {
                   <th>Period</th>
                   <th>Amount</th>
                   <th>Paid</th>
-                  <th>Due Date</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
@@ -357,7 +344,6 @@ const Fees = () => {
                     <td>{fee.period ? new Date(fee.period + '-01').toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) : '-'}</td>
                     <td>{formatCurrency(fee.amount)}</td>
                     <td>{formatCurrency(fee.paidAmount || 0)}</td>
-                    <td>{new Date(fee.dueDate).toLocaleDateString()}</td>
                     <td>
                       <span className={`status-badge status-${fee.status}`}>
                         {fee.status}

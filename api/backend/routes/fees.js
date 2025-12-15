@@ -13,15 +13,15 @@ router.get('/', auth, async (req, res) => {
     if (status) query.status = status;
     if (feeType) query.feeType = feeType;
     if (startDate || endDate) {
-      query.dueDate = {};
-      if (startDate) query.dueDate.$gte = new Date(startDate);
-      if (endDate) query.dueDate.$lte = new Date(endDate);
+      query.createdAt = {};
+      if (startDate) query.createdAt.$gte = new Date(startDate);
+      if (endDate) query.createdAt.$lte = new Date(endDate);
     }
 
     const fees = await Fee.find(query)
       .populate('student', 'firstName lastName studentId')
       .populate('recordedBy', 'name username')
-      .sort({ dueDate: -1 });
+      .sort({ createdAt: -1 });
     
     res.json(fees);
   } catch (error) {
