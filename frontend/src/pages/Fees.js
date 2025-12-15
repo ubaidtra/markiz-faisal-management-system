@@ -19,7 +19,7 @@ const Fees = () => {
     student: '',
     feeType: 'tuition',
     amount: '',
-    period: '',
+    selectedMonths: [],
     dueDate: '',
     paymentMethod: '',
     notes: ''
@@ -28,11 +28,6 @@ const Fees = () => {
   useEffect(() => {
     fetchFees();
     fetchStudents();
-    const currentDate = new Date();
-    const currentMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
-    if (!formData.period) {
-      setFormData(prev => ({ ...prev, period: currentMonth }));
-    }
   }, []);
 
   const fetchFees = async () => {
@@ -58,26 +53,62 @@ const Fees = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const submitData = {
-        ...formData,
-        amount: parseFloat(formData.amount)
-      };
-
-      // If payment method is selected, automatically set paidAmount to full amount
-      if (formData.paymentMethod) {
-        submitData.paidAmount = parseFloat(formData.amount);
-      }
-
       if (editingFee) {
+        const submitData = {
+          ...formData,
+          amount: parseFloat(formData.amount),
+          period: formData.selectedMonths[0] || ''
+        };
+        if (formData.paymentMethod) {
+          submitData.paidAmount = parseFloat(formData.amount);
+        }
+        delete submitData.selectedMonths;
         await axios.put(`${API_URL}/fees/${editingFee._id}`, {
           ...submitData,
           paidAmount: formData.paidAmount ? parseFloat(formData.paidAmount) : submitData.paidAmount
         });
+        fetchFees();
+        resetForm();
       } else {
-        await axios.post(`${API_URL}/fees`, submitData);
+        if (formData.feeType === 'tuition' && formData.selectedMonths.length === 0) {
+          alert('Please select at least one month for tuition payment');
+          return;
+        }
+
+        const monthsToProcess = formData.feeType === 'tuition' 
+          ? formData.selectedMonths 
+          : [formData.selectedMonths[0] || new Date().toISOString().slice(0, 7)];
+
+        const baseData = {
+          student: formData.student,
+          feeType: formData.feeType,
+          amount: parseFloat(formData.amount),
+          dueDate: formData.dueDate,
+          paymentMethod: formData.paymentMethod || '',
+          notes: formData.notes || ''
+        };
+
+        if (formData.paymentMethod) {
+          baseData.paidAmount = parseFloat(formData.amount);
+        }
+
+        if (monthsToProcess.length > 1) {
+          const feesArray = monthsToProcess.map(month => ({
+            ...baseData,
+            period: month
+          }));
+          await axios.post(`${API_URL}/fees/bulk`, { fees: feesArray });
+        } else {
+          await axios.post(`${API_URL}/fees`, {
+            ...baseData,
+            period: monthsToProcess[0]
+          });
+        }
+
+        fetchFees();
+        resetForm();
+        alert(`Successfully created ${monthsToProcess.length} fee record(s)`);
       }
-      fetchFees();
-      resetForm();
     } catch (error) {
       alert(error.response?.data?.message || 'Error saving fee');
     }
@@ -89,7 +120,7 @@ const Fees = () => {
       student: fee.student._id || fee.student,
       feeType: fee.feeType,
       amount: fee.amount.toString(),
-      period: fee.period || '',
+      selectedMonths: fee.period ? [fee.period] : [],
       dueDate: fee.dueDate ? new Date(fee.dueDate).toISOString().split('T')[0] : '',
       paidAmount: fee.paidAmount?.toString() || '',
       paymentMethod: fee.paymentMethod || '',
@@ -110,19 +141,45 @@ const Fees = () => {
   };
 
   const resetForm = () => {
-    const currentDate = new Date();
-    const currentMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
     setFormData({
       student: '',
       feeType: 'tuition',
       amount: '',
-      period: currentMonth,
+      selectedMonths: [],
       dueDate: '',
       paymentMethod: '',
       notes: ''
     });
     setEditingFee(null);
     setShowForm(false);
+  };
+
+  const generateMonthOptions = () => {
+    const options = [];
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth();
+    
+    for (let i = -2; i <= 12; i++) {
+      const date = new Date(currentYear, currentMonth + i, 1);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const monthValue = `${year}-${month}`;
+      const monthLabel = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+      options.push({ value: monthValue, label: monthLabel });
+    }
+    return options;
+  };
+
+  const toggleMonth = (monthValue) => {
+    setFormData(prev => {
+      const currentMonths = prev.selectedMonths || [];
+      if (currentMonths.includes(monthValue)) {
+        return { ...prev, selectedMonths: currentMonths.filter(m => m !== monthValue) };
+      } else {
+        return { ...prev, selectedMonths: [...currentMonths, monthValue] };
+      }
+    });
   };
 
   return (
@@ -166,13 +223,40 @@ const Fees = () => {
                       <option value="other">Other</option>
                     </select>
                   </div>
-                  {formData.feeType === 'tuition' && (
+                  {formData.feeType === 'tuition' && !editingFee && (
+                    <div className="form-group full-width">
+                      <label>Select Months *</label>
+                      <div className="month-selector">
+                        {generateMonthOptions().map(option => (
+                          <label key={option.value} className="month-checkbox">
+                            <input
+                              type="checkbox"
+                              checked={formData.selectedMonths.includes(option.value)}
+                              onChange={() => toggleMonth(option.value)}
+                            />
+                            <span>{option.label}</span>
+                          </label>
+                        ))}
+                      </div>
+                      {formData.selectedMonths.length > 0 && (
+                        <div className="selected-months-summary">
+                          Selected: {formData.selectedMonths.length} month(s)
+                          {formData.amount && (
+                            <span className="total-amount">
+                              {' '}• Total: {formatCurrency(parseFloat(formData.amount) * formData.selectedMonths.length)}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {formData.feeType === 'tuition' && editingFee && (
                     <div className="form-group">
                       <label>Month *</label>
                       <input
                         type="month"
-                        value={formData.period}
-                        onChange={(e) => setFormData({ ...formData, period: e.target.value })}
+                        value={formData.selectedMonths[0] || ''}
+                        onChange={(e) => setFormData({ ...formData, selectedMonths: [e.target.value] })}
                         required
                       />
                     </div>

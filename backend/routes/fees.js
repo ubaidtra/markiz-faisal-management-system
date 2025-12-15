@@ -52,7 +52,6 @@ router.post('/', auth, authorize('admin', 'accountant'), async (req, res) => {
       recordedBy: req.user._id
     };
 
-    // If payment method is provided, it means payment is registered and fee is paid
     if (feeData.paymentMethod) {
       feeData.status = 'paid';
       feeData.paidAmount = feeData.paidAmount || feeData.amount;
@@ -64,6 +63,45 @@ router.post('/', auth, authorize('admin', 'accountant'), async (req, res) => {
     await fee.populate('student', 'firstName lastName studentId');
     await fee.populate('recordedBy', 'name username');
     res.status(201).json(fee);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+});
+
+router.post('/bulk', auth, authorize('admin', 'accountant'), async (req, res) => {
+  try {
+    const { fees } = req.body;
+    
+    if (!Array.isArray(fees) || fees.length === 0) {
+      return res.status(400).json({ message: 'Fees array is required' });
+    }
+
+    const feeDataArray = fees.map(feeData => {
+      const processedData = {
+        ...feeData,
+        recordedBy: req.user._id
+      };
+
+      if (processedData.paymentMethod) {
+        processedData.status = 'paid';
+        processedData.paidAmount = processedData.paidAmount || processedData.amount;
+        processedData.paidDate = new Date();
+      }
+
+      return processedData;
+    });
+
+    const createdFees = await Fee.insertMany(feeDataArray);
+    await Fee.populate(createdFees, [
+      { path: 'student', select: 'firstName lastName studentId' },
+      { path: 'recordedBy', select: 'name username' }
+    ]);
+
+    res.status(201).json({
+      message: `Successfully created ${createdFees.length} fee record(s)`,
+      count: createdFees.length,
+      fees: createdFees
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
